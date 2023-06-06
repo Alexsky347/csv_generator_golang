@@ -11,12 +11,6 @@ import (
 )
 
 
-
-// N is an alias for an unallocated struct
-func N(size int) []struct{} {
-	return make([]struct{}, size)
-}
-
 func main() {
 	
 	if len(os.Args) < 2 {
@@ -34,7 +28,7 @@ func main() {
 		fmt.Println("Error:", err)
 		return
 	}
-	
+
 	//file name
 	fileName := "../csvCustom/" + strconv.Itoa(newRange) + "-routes.csv"
 

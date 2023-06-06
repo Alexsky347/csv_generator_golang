@@ -14,12 +14,7 @@ import (
 var cusRangeUser = 2000
 var fileNameUser = "../csvCustom/" + strconv.Itoa(cusRangeUser) + "-users.csv"
 
-// N is an alias for an unallocated struct
-func N2() []struct{} {
-	return make([]struct{}, cusRangeUser)
-}
-
-func main() {
+func generateUser() {
 
 
 	headers := []string{
@@ -40,7 +35,7 @@ func main() {
 	csvwriter.Comma = ';'
 	defer csvwriter.Flush()
 
-	for i := range N2() {
+	for i := range N(cusRangeUser) {
 		fmt.Println(i)
 		typeC := randomdata.Number(0, cusRangeUser*10)
 		firstName := strings.ToLower(randomdata.FirstName(typeC))
