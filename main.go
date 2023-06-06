@@ -4,24 +4,52 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
-	"strings"
+	"strconv"
 
 	randomdata "github.com/Pallinder/go-randomdata"
 )
 
 
-func main() {
 
+// N is an alias for an unallocated struct
+func N(size int) []struct{} {
+	return make([]struct{}, size)
+}
+
+func main() {
+	
+	if len(os.Args) < 2 {
+		fmt.Println("No argument provided.")
+		return
+	}
+	
+	// excluding the program name itself
+	cusRange := os.Args[1]
+	fmt.Println("Argument %d: %s\n", cusRange)
+
+	//convert arg to int
+	newRange, err := strconv.Atoi(cusRange)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	
+	//file name
+	fileName := "../csvCustom/" + strconv.Itoa(newRange) + "-routes.csv"
+
+	flow := []string{"ACME-BAP"}
+
+	// users := []string{"acme", "agnes", "alan", "anais", "arnaud", "aude", "benjamin", "benoit", "benoit2", "catherine", "christophe", "dev", "didier", "eva", "fabrice", "fgf", "francois", "frauke", "frederic", "frederique", "fritzi", "guillaume", "heinz", "itesoft", "jade", "james", "jason", "jean-luc", "john", "kevin", "laurent", "marie", "mike", "monika", "nick", "patrice", "paul", "pierrick", "rachid", "regis", "sarah", "service", "sonia", "stan", "thierry", "tom", "yves"}
+	users := []string{"robert", "marcel", "michel"}
 	headers := []string{
-		"userName", "userFirstName", "userLastName", "userEmail", "TITLE",
-		"userLanguage", "userState", "userSupervisor", "userEmailNotification", "userIdentityPicture"}
+		"flow", "label", "companyCode", "siteCode", "usersLevel1",
+		"netAmount2", "usersLevel2", "netAmount3", "usersLevel3", "netAmount4", "usersLevel4"}
 
 	records := [][]string{}
 	records = append(records, headers)
 
-	file, err := os.Create("employee.csv")
+	file, err := os.Create(fileName)
 	defer file.Close()
 
 	if err != nil {
@@ -32,26 +60,28 @@ func main() {
 	csvwriter.Comma = ';'
 	defer csvwriter.Flush()
 
+	for i := range N(newRange) {
+		fmt.Println(i)
+		label := randomdata.SillyName()
+		site := "ACME_" + randomdata.City()
+		siteCountry := "ACME_" + randomdata.Country(randomdata.TwoCharCountry) + strconv.Itoa(i)
 
-	for i := range [1000]int{} {
-        fmt.Println(i)
-		custType := randomdata.Male
-		lastName := randomdata.LastName()
-		firstName := randomdata.FirstName(custType)
-		email := lastName + "." + firstName + "@gmail.com"
-		username := strings.ToLower(firstName[0:1]) + strings.ToLower(lastName[0:2])
+		lengthUsers := len(users)
 
-		data :=[]string{
-		 	username, firstName, lastName, email, "Admin",
-			"fr", "userState", "userSupervisor", "", ""}
-		
+		data := []string{
+			flow[0],
+			label, siteCountry, site,
+			users[randomdata.Number(0, lengthUsers)],
+			strconv.Itoa(randomdata.Number(10, 10000)), users[randomdata.Number(0, lengthUsers)],
+			strconv.Itoa(randomdata.Number(10, 10000)), users[randomdata.Number(0, lengthUsers)],
+			strconv.Itoa(randomdata.Number(10, 10000)), users[randomdata.Number(0, lengthUsers)]}
+
 		records = append(records, data)
 	}
-	
+
 	err = csvwriter.WriteAll(records) // calls Flush internally
 
-    if err != nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 }
-

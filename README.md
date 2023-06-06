@@ -2,6 +2,7 @@
 
 go build main.go
 go run main.go
+go run main.go 30
 ./main
 
 
